@@ -12,15 +12,20 @@ export default function App() {
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
   }
+
+  function onDeleteItem(itemId) {
+    setItems((items) => items.filter((item) => item.id !== itemId));
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} />
+      <PackingList items={items} onDeleteItem={onDeleteItem} />
       <Stats />
     </div>
   );
-} 
+}
 
 function Logo() {
     return <h1> JALAN KUY</h1>;
@@ -68,30 +73,30 @@ function Form({ onAddItems }) {
     );
 }
 
-function PackingList({ items }) {
-    return(
-       <div className="list">
-        <ul>
-            {items.map((item) => (
-                <Item item={item} key={item.id}/>
-            ))}
-        </ul>
+function PackingList({ items, onDeleteItem }) {
+  return (
+    <div className="list">
+      <ul>
+        {items.map((item) => (
+          <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
+        ))}
+      </ul>
     </div>
-    );
+  );
 }
 
-function Item({ item }) {
-    return (
-        <li>
-            {/* ternary operator to check simple condition */}
-            {/* if item.packed === true then apply this style textDecoration: "line-through" 
-            else don't do anything */}
-            <span style={item.packed ? { textDecoration: "line-through"} : {}}>
-            {item.quantity} {item.description}
-            </span>
-            <button>❌</button>
-        </li>
-    );
+function Item({ item, onDeleteItem }) {
+  return (
+    <li>
+      {/* ternary operator to check simple condition */}
+      {/* if item.packed === true then apply this style textDecoration: "line-through" 
+      else don't do anything */}
+      <span style={item.packed ? { textDecoration: "line-through" } : {}}>
+        {item.quantity} {item.description}
+      </span>
+      <button onClick={() => onDeleteItem(item.id)}>❌</button>
+    </li>
+  );
 }
 
 function Stats() {
