@@ -17,12 +17,23 @@ export default function App() {
     setItems((items) => items.filter((item) => item.id !== itemId));
   }
 
+  function handleUpdateItem(id) {
+    setItems((items) =>
+      items.map((item) =>
+        item.id === id ? { ...item, packed: !item.packed } : item
+      )
+    );
+  }
+
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} onDeleteItem={onDeleteItem} />
-      <Stats />
+      <PackingList items={items} 
+      onDeleteItem={onDeleteItem} 
+      onUpdateItem={handleUpdateItem}
+      />
+       <Stats items={items} />
     </div>
   );
 }
@@ -73,21 +84,31 @@ function Form({ onAddItems }) {
     );
 }
 
-function PackingList({ items, onDeleteItem }) {
+function PackingList({ items, onDeleteItem, onUpdateItem }) {
   return (
     <div className="list">
       <ul>
         {items.map((item) => (
-          <Item item={item} key={item.id} onDeleteItem={onDeleteItem} />
+          <Item 
+          item={item}
+           key={item.id} 
+           onDeleteItem={onDeleteItem} 
+           onUpdateItem={onUpdateItem}
+           />
         ))}
       </ul>
     </div>
   );
 }
 
-function Item({ item, onDeleteItem }) {
+function Item({ item, onDeleteItem, onUpdateItem }) {
   return (
     <li>
+       <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => onUpdateItem(item.id)}
+      />
       {/* ternary operator to check simple condition */}
       {/* if item.packed === true then apply this style textDecoration: "line-through" 
       else don't do anything */}
@@ -99,12 +120,26 @@ function Item({ item, onDeleteItem }) {
   );
 }
 
-function Stats() {
+function Stats({ items }) {
+  if (!items.length)
     return (
-        <footer className="stats">
-            <em>
-                Kamu punya 0 barang di daftar, dan sudah packing 0 barang (0%){" "}
-            </em>
-        </footer>
+      <p className="stats">
+        <em>Mulai Tambahkan Barang Bawaan Anda</em>
+      </p>
     );
+
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
+
+  return (
+    <footer className="stats">
+      <em>
+        {percentage === 100
+          ? "Kamu Siap Berangkat!"
+          : `Kamu punya ${numItems} barang di daftar, dan sudah packing ${numPacked}
+        barang (${percentage}%)`}
+      </em>
+    </footer>
+  );
 }
