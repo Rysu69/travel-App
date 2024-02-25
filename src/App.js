@@ -1,13 +1,8 @@
 import { useState } from "react";
 
-// const initialItems = [
-//     { id: 1, description: "Passport", quantity: 2, packed: false},
-//     { id: 2, description: "Socks", quantity: 12, packed: true},
-//     { id: 3, description: "Power Bank", quantity: 1, packed: true}
-// ];
-
 export default function App() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([
+  ]);
 
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
@@ -39,7 +34,7 @@ export default function App() {
 }
 
 function Logo() {
-    return <h1> JALAN KUY</h1>;
+    return <h1> ABSEN KELAS</h1>;
 }
 
 function Form({ onAddItems }) { 
@@ -64,8 +59,7 @@ function Form({ onAddItems }) {
 
     return (
         <form className="add-form" onSubmit={handleSubmit}>
-            <h3>Apa aja yang dibawa?</h3>
-            <h3>Yuk Checklist Barang</h3>
+            <h3>Absen Murid</h3>
             <select
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value))}
@@ -75,26 +69,28 @@ function Form({ onAddItems }) {
                 ))}
             </select>
             <input type="text" 
-            placeholder="Barang yang mau dibawa"
+            placeholder="Nama Murid"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             />
-            <button>Bawa</button>
+            <button>Tambah</button>
         </form>
     );
 }
 
 function PackingList({ items, onDeleteItem, onUpdateItem }) {
+  const sortedItems = items.slice().sort((a, b) => a.quantity - b.quantity);
+
   return (
     <div className="list">
       <ul>
-        {items.map((item) => (
+        {sortedItems.map((item) => (
           <Item 
-          item={item}
-           key={item.id} 
-           onDeleteItem={onDeleteItem} 
-           onUpdateItem={onUpdateItem}
-           />
+            item={item} 
+            key={item.id} 
+            onDeleteItem={onDeleteItem} 
+            onUpdateItem={onUpdateItem}
+          />
         ))}
       </ul>
     </div>
@@ -102,43 +98,50 @@ function PackingList({ items, onDeleteItem, onUpdateItem }) {
 }
 
 function Item({ item, onDeleteItem, onUpdateItem }) {
+  const [checked, setChecked] = useState({});
+
   return (
     <li>
-       <input
-        type="checkbox"
-        value={item.packed}
-        onChange={() => onUpdateItem(item.id)}
-      />
+
       {/* ternary operator to check simple condition */}
       {/* if item.packed === true then apply this style textDecoration: "line-through" 
       else don't do anything */}
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
+      {Array.from({ length: 4 }, (_, i) => (
+        <input
+          key={i}
+          type="checkbox"
+          checked={checked[i] || false}
+          onChange={() => {
+            const newChecked = { ...checked };
+            Object.keys(newChecked).forEach((key) => {
+              newChecked[key] = false;
+            });
+            newChecked[i] = true;
+            setChecked(newChecked);
+          }}
+        />
+      ))}
       <button onClick={() => onDeleteItem(item.id)}>❌</button>
     </li>
   );
 }
 
 function Stats({ items }) {
+  // jika tidak ada item pada array
   if (!items.length)
     return (
       <p className="stats">
-        <em>Mulai Tambahkan Barang Bawaan Anda</em>
+        <em>Mulai Daftarkan Murid Anda 😎</em>
       </p>
     );
-
-  const numItems = items.length;
-  const numPacked = items.filter((item) => item.packed).length;
-  const percentage = Math.round((numPacked / numItems) * 100);
 
   return (
     <footer className="stats">
       <em>
-        {percentage === 100
-          ? "Kamu Siap Berangkat!"
-          : `Kamu punya ${numItems} barang di daftar, dan sudah packing ${numPacked}
-        barang (${percentage}%)`}
+       Checklist Murid (Masuk,Sakit,Ijin,Alpha)
       </em>
     </footer>
   );
