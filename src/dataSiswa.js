@@ -1,0 +1,38 @@
+
+const dataSiswa = [
+    { id: 1, description: "Ahmad", quantity: 1, packed: false },
+    { id: 2, description: "Zaky", quantity: 2, packed: false },
+    { id: 3, description: "Akram", quantity: 3, packed: false },
+    { id: 4, description: "Bintang", quantity: 4, packed: false },
+    { id: 5, description: "Desta", quantity: 5, packed: false },
+    { id: 6, description: "Syahla", quantity: 6, packed: false },
+    { id: 7, description: "Fairuz", quantity: 7, packed: false },
+    { id: 8, description: "Faiz", quantity: 8, packed: false },
+    { id: 9, description: "Ferdinan", quantity: 9, packed: false },
+    { id: 10, description: "Joan", quantity: 10, packed: false },
+    { id: 11, description: "Khairul", quantity: 11, packed: false },
+    { id: 12, description: "Hesti", quantity: 12, packed: false },
+    { id: 13, description: "Alwi", quantity: 13, packed: false },
+    { id: 14, description: "Fahmi", quantity: 14, packed: false },
+    { id: 15, description: "Daus", quantity: 15, packed: false },
+    { id: 16, description: "Firly", quantity: 16, packed: false },
+    { id: 17, description: "Gathan", quantity: 17, packed: false },
+    { id: 18, description: "Haris", quantity: 18, packed: false },
+    { id: 19, description: "Marco", quantity: 19, packed: false },
+    { id: 20, description: "Naufal", quantity: 20, packed: false },
+    { id: 21, description: "Rafi", quantity: 21, packed: false },
+    { id: 22, description: "Adan", quantity: 22, packed: false },
+    { id: 23, description: "Rasyid", quantity: 23, packed: false },
+    { id: 24, description: "Zidan", quantity: 24, packed: false },
+    { id: 25, description: "Nabil", quantity: 25, packed: false },
+    { id: 26, description: "Niko", quantity: 26, packed: false },
+    { id: 27, description: "Glenn", quantity: 27, packed: false },
+    { id: 28, description: "Rendi", quantity: 28, packed: false },
+    { id: 29, description: "Rizal", quantity: 29, packed: false },
+    { id: 30, description: "Sandeki", quantity: 30, packed: false },
+    { id: 31, description: "Vincent", quantity: 31, packed: false },
+    { id: 32, description: "Valentino", quantity: 32, packed: false },
+  
+    ];
+
+    export default dataSiswa;
