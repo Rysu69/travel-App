@@ -1,138 +1,160 @@
-import React, { useState } from "react";
-import dataSiswa from './dataSiswa.js';
+import { useState } from "react";
 
+//parent component
 export default function App() {
-  const [items, setItems] = useState(dataSiswa);
+  //destructuring array for states
+  const [items, setItems] = useState([]);
 
+  //handle add items to the state
   function handleAddItems(item) {
     setItems((items) => [...items, item]);
   }
 
-  function onDeleteItem(itemId) {
-    setItems((items) => items.filter((item) => item.id !== itemId));
+  //handle delete items from the state
+  function handleDeleteItem(id) {
+    // console.log(id);
+    setItems((items) => items.filter((item) => item.id !== id));
   }
 
-  function handleUpdateItem(id, category) {
+  //handle update items from the state
+  function handleUpdateItem(id) {
     setItems((items) =>
       items.map((item) =>
-        item.id === id ? { ...item, [category]: !item[category] } : item
+        item.id === id ? { ...item, packed: !item.packed } : item
       )
     );
   }
 
+  //render child components inside parent
   return (
     <div className="app">
       <Logo />
       <Form onAddItems={handleAddItems} />
-      <PackingList items={items} onDeleteItem={onDeleteItem} onUpdateItem={handleUpdateItem} />
+      <PackingList
+        items={items}
+        onDeleteItem={handleDeleteItem}
+        onUpdateItem={handleUpdateItem}
+      />
       <Stats items={items} />
     </div>
   );
 }
 
+//child component logo
 function Logo() {
-  return <h1>ABSEN KELAS</h1>;
+  return (
+    <div>
+      <h1> JALAN JALAN</h1>
+    </div>
+  );
 }
 
+//child component form
 function Form({ onAddItems }) {
+  //destructuring array for state
   const [description, setDescription] = useState("");
   const [quantity, setQuantity] = useState(1);
 
+  // handle submission of from, by preventing its default behavior
   function handleSubmit(e) {
     e.preventDefault();
 
+    //if empty description
     if (!description) return;
 
-    const newItem = { description, quantity, packed: false, id: Date.now(), A: false, B: false, C: false, D: false };
-    console.log(newItem);
+    const newItem = { description, quantity, packed: false, id: Date.now() };
+    console.log(newItem); //testing new item data
 
+    //store new item in array from parent state
+    //called this function whenever form submitted
     onAddItems(newItem);
 
+    //return this state
     setDescription("");
     setQuantity(1);
   }
 
   return (
     <form className="add-form" onSubmit={handleSubmit}>
-      <h3>Absen Murid</h3>
-      <select value={quantity} onChange={(e) => setQuantity(Number(e.target.value))}>
-        {Array.from({ length: 40 }, (_, i) => i + 1).map((num) => (
-          <option key={num} value={num}>
-            {num}
-          </option>
+      <h3>Yuk Checklist Barang 😁📝</h3>
+      <select
+        value={quantity}
+        onChange={(e) => setQuantity(Number(e.target.value))}
+      >
+        {Array.from({ length: 20 }, (_, i) => i + 1).map((num) => (
+          <option value={num}>{num}</option>
         ))}
       </select>
       <input
         type="text"
-        placeholder="Nama Murid"
+        placeholder="Barang yang mau dibawa"
         value={description}
         onChange={(e) => setDescription(e.target.value)}
       />
-      <button>Tambah</button>
+      <button>Bawa</button>
     </form>
   );
 }
 
+//child component PackingList
 function PackingList({ items, onDeleteItem, onUpdateItem }) {
-  const sortedItems = items.slice().sort((a, b) => a.quantity - b.quantity);
-
   return (
     <div className="list">
       <ul>
-        {sortedItems.map((item) => (
-          <Item item={item} key={item.id} onDeleteItem={onDeleteItem} onUpdateItem={onUpdateItem} />
+        {items.map((item) => (
+          <Item
+            item={item}
+            key={item.id}
+            onDeleteItem={onDeleteItem}
+            onUpdateItem={onUpdateItem}
+          />
         ))}
       </ul>
     </div>
   );
 }
 
+//sub-component PackingList
 function Item({ item, onDeleteItem, onUpdateItem }) {
-  const [checked, setChecked] = useState({});
-
-  const handleCheckboxChange = (index, category) => {
-    const newChecked = { ...checked };
-    Object.keys(newChecked).forEach((key) => {
-      newChecked[key] = false;
-    });
-    newChecked[index] = true;
-    setChecked(newChecked);
-    onUpdateItem(item.id, category);
-  };
-
   return (
     <li>
+      <input
+        type="checkbox"
+        value={item.packed}
+        onChange={() => onUpdateItem(item.id)}
+      />
+      {/* ternary operator to check simple condition */}
+      {/* if item.packed === true then apply this style textDecoration: "line-through" 
+      else don't do anything */}
       <span style={item.packed ? { textDecoration: "line-through" } : {}}>
         {item.quantity} {item.description}
       </span>
-      {['A', 'B', 'C', 'D'].map((category, index) => (
-        <input
-          key={index}
-          type="checkbox"
-          checked={checked[index] || false}
-          onChange={() => handleCheckboxChange(index, category)}
-        />
-      ))}
       <button onClick={() => onDeleteItem(item.id)}>❌</button>
     </li>
   );
 }
 
+//child component Stats
 function Stats({ items }) {
-  const stats = { A: 0, B: 0, C: 0, D: 0 };
+  // jika tidak ada item pada array
+  if (!items.length)
+    return (
+      <p className="stats">
+        <em>Mulai Tambahkan Barang Bawaan Anda 😎</em>
+      </p>
+    );
 
-  items.forEach((item) => {
-    ['A', 'B', 'C', 'D'].forEach((category) => {
-      if (item[category]) {
-        stats[category]++;
-      }
-    });
-  });
+  const numItems = items.length;
+  const numPacked = items.filter((item) => item.packed).length;
+  const percentage = Math.round((numPacked / numItems) * 100);
 
   return (
     <footer className="stats">
       <em>
-        Checklist Murid (Masuk = {stats.A},Sakit = {stats.B},Ijin = {stats.C},Alpha = {stats.D})
+        {percentage === 100
+          ? "Kamu Siap Berangkat 🛺🚕"
+          : `💼 Kamu punya ${numItems} barang di daftar, dan sudah packing ${numPacked}
+        barang (${percentage}%)`}
       </em>
     </footer>
   );
